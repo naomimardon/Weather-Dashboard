@@ -1,0 +1,29 @@
+/*Color Theme*/
+:root {
+    --darkBlue: #154360;
+    --lightBlue: #5499C7;
+}
+
+#header {
+    background-image: linear-gradient(to right, var(--lightBlue) , var(--darkBlue));
+}
+
+#search-input {
+    width: 100%;
+    margin: 5px
+}
+
+#search-button {
+    width: 100%;
+    background-color: var(--lightBlue);
+    margin: 5px;
+    border-radius: 5px;
+}
+
+#today {
+    border: 2px solid black;
+}
+
+#forecast {
+    border: 2px solid black;
+}

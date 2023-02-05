@@ -12,7 +12,7 @@
 </head>
 
 <body>
-  <header class="container-fluid text-center text-white bg-dark p-2 weather-header">
+  <header class="container-fluid text-center text-white bg-dark p-2 weather-header" id="header">
     <h1>Weather Dashboard</h1>
   </header>
 
@@ -24,25 +24,22 @@
           Search for a City:
         </h2>
         <form id="search-form" class="form">
-          <div class="form-inline form-group">
             <div class="input-group">
               <input class="form-input weather-search" type="text" id="search-input" placeholder="London"
                 aria-labelledby="form-heading" aria-controls="today forecast" />
-              <div class="input-group-append">
                 <button type="submit" class="btn search-button" id="search-button" aria-label="submit search">
                   Search
                 </button>
                 <hr class="hr weather-hr" />
               </div>
-            </div>
-          </div>
         </form>
-        <div class="list-group" id="history"></div>
+        <div class="list-group" id="history">
+        </div>
       </aside>
 
       <div class="col-lg-9 pb-3">
-        <section id="today" class="mt-3" role="region" aria-live="polite"></section>
-        <section id="forecast" class="row mt-3" role="region" aria-live="polite"></section>
+        <section id="today" class="mt-3" role="region" aria-live="polite">Today</section>
+        <section id="forecast" class="row mt-3" role="region" aria-live="polite">Forecast</section>
       </div>
     </div>
   </div>
