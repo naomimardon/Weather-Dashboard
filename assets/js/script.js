@@ -63,6 +63,7 @@ let APIKey = "2befb069531c6856f267a412d5ad148c";
 let cityInput = $("#search-input").val().trim().toLowerCase();
 
 lonLatURL = "https://api.openweathermap.org/geo/1.0/direct?q=" + cityInput + "&limit=1&appid=" + APIKey;
+console.log("lonLatURL: " + lonLatURL);
 
     $.ajax({
         url: lonLatURL,
@@ -71,6 +72,7 @@ lonLatURL = "https://api.openweathermap.org/geo/1.0/direct?q=" + cityInput + "&l
         let lon = geoResponse[0].lon;
         let lat = geoResponse[0].lat;
         let queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&units=metric&appid=" +APIKey;
+        console.log(queryURL);
         
         $.ajax({
             url: queryURL,
@@ -85,13 +87,18 @@ lonLatURL = "https://api.openweathermap.org/geo/1.0/direct?q=" + cityInput + "&l
 $("#search-button").on("click", function(event) {
     event.preventDefault();
     let cityInput = $("#search-input").val().trim().toUpperCase();
-    cities.push(cityInput);
+    console.log(cityInput);
+    if (cities.includes(cityInput)) {
+        console.log("Already in search list");;
+    } else {
+        cities.push(cityInput);
+    }
     if (cities.length > 5) {
         cities.shift();
     }
 
-    renderCityButtons();
     storeCitiesArray();
+    renderCityButtons();
     buildQueryURL();
 
     
