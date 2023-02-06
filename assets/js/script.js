@@ -1,7 +1,7 @@
 let cities = [];
 
 function init () {
-    const storedCities = JSON.parse(localStorage.getItem("Cities"));
+    let storedCities = JSON.parse(localStorage.getItem("Cities"));
     if (storedCities !== null) {
         cities = storedCities;
         renderCityButtons();
@@ -28,13 +28,38 @@ function storeCitiesArray() {
     localStorage.setItem("Cities", JSON.stringify(cities));
 };
 
-function callWeatherData(weatherResponse) {
+function renderTodaysWeather(weatherResponse) {
     console.log(weatherResponse);
-    console.log(weatherResponse.list[0].main.temp);
+
+    let today = $("#today")
+        .css("border", "2px solid black")
+
+    let cityInput = $("#search-input").val().trim().toUpperCase();
+    let todaysHeader = $("#todaysHeader");
+    let todaysDate = moment().format("(DD/MM/YYYY)");
+    todaysHeader.text(cityInput + " " + todaysDate);
+
+    let todaysIconID = weatherResponse.list[0].weather[0].icon;
+    let iconURL = 'https://openweathermap.org/img/wn/'+ todaysIconID + '@2x.png';
+    let todaysIcon = $("<img>")
+        .attr("src", iconURL);
+    todaysHeader.append(todaysIcon);
+
+    let todaysTemp = $("#todaysTemp");
+    todaysTemp.text("Temperature: " + weatherResponse.list[0].main.temp + "°C");
+
+    let todaysWind = $("#todaysWind");
+    let todaysWindSpeed = Math.round((weatherResponse.list[0].wind.speed *10) *100) /100;
+    todaysWind.text("Wind Speed: " + todaysWindSpeed + "km/hr");
+
+    let todaysHumidity = $("#todaysHumidity");
+    todaysHumidity.text("Humidity: " + weatherResponse.list[0].main.humidity + "%");
+
+    cityInput = $("#search-input").val("");
 }
 
 function buildQueryURL() {
-const APIKey = "2befb069531c6856f267a412d5ad148c";
+let APIKey = "2befb069531c6856f267a412d5ad148c";
 let cityInput = $("#search-input").val().trim().toLowerCase();
 
 lonLatURL = "https://api.openweathermap.org/geo/1.0/direct?q=" + cityInput + "&limit=1&appid=" + APIKey;
@@ -45,13 +70,13 @@ lonLatURL = "https://api.openweathermap.org/geo/1.0/direct?q=" + cityInput + "&l
     }).then(function(geoResponse) {
         let lon = geoResponse[0].lon;
         let lat = geoResponse[0].lat;
-        const queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&units=metric&appid=" +APIKey;
+        let queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&units=metric&appid=" +APIKey;
         
         $.ajax({
             url: queryURL,
             method: "GET"
         }).then(function(weatherResponse) {
-            callWeatherData(weatherResponse);
+            renderTodaysWeather(weatherResponse);
         });
     });
 
@@ -69,7 +94,7 @@ $("#search-button").on("click", function(event) {
     storeCitiesArray();
     buildQueryURL();
 
-    cityInput = $("#search-input").val("");
+    
 });
 
 init();
