@@ -32,9 +32,9 @@ function storeCitiesArray() {
 
 function renderCityName(geoResponse) {
     let cityName = geoResponse[0].name;
-    let todaysDate = moment().format("(DD/MM/YYYY)");
-    todaysHeader.text(cityName + " " + todaysDate);
-}
+        let todaysDate = moment().format("(DD/MM/YYYY)");
+        todaysHeader.text(cityName + " " + todaysDate);
+};
 
 function renderTodaysWeather(weatherResponse) {
     console.log(weatherResponse);
@@ -115,6 +115,20 @@ function renderForecast(weatherResponse) {
     });
 };
 
+function createCitiesArray(input) {
+    if (cities.includes(input)) {
+        console.log("Already in search list");;
+    } else {
+        cities.push(input);
+    }
+    if (cities.length > 5) {
+        cities.shift();
+    };
+
+    storeCitiesArray();
+    renderCityButtons();
+};
+
 function buildQueryURL(input) {
     let APIKey = "2befb069531c6856f267a412d5ad148c";
 
@@ -126,6 +140,7 @@ function buildQueryURL(input) {
         method: "GET"
     }).then(function (geoResponse) {
         renderCityName(geoResponse);
+        createCitiesArray(geoResponse[0].name)
         let lon = geoResponse[0].lon;
         let lat = geoResponse[0].lat;
         let queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&units=metric&appid=" + APIKey;
@@ -145,17 +160,7 @@ $("#search-button").on("click", function (event) {
     event.preventDefault();
     let cityInput = $("#search-input").val().trim().toUpperCase();
     console.log(cityInput);
-    if (cities.includes(cityInput)) {
-        console.log("Already in search list");;
-    } else {
-        cities.push(cityInput);
-    }
-    if (cities.length > 5) {
-        cities.shift();
-    }
 
-    storeCitiesArray();
-    renderCityButtons();
     buildQueryURL(cityInput);
 });
 
