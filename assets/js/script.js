@@ -1,13 +1,5 @@
 let cities = [];
 
-function init () {
-    let storedCities = JSON.parse(localStorage.getItem("Cities"));
-    if (storedCities !== null) {
-        cities = storedCities;
-        renderCityButtons();
-    }
-}
-
 function renderCityButtons() {
     let cityContainer = $(".list-group");
 
@@ -15,14 +7,21 @@ function renderCityButtons() {
 
     cities.forEach(function (city) {
         let cityButton = $("<button>");
-            cityButton.text(city);
-            cityButton.addClass("cityBtn btn btn-secondary btn-lg btn-block");
-            cityButton.attr("type", "button");
-            cityButton.attr("data-city", city);
-            cityButton.css("border-radius", "5px");
-            cityContainer.prepend(cityButton);
+        cityButton.text(city);
+        cityButton.addClass("cityBtn btn btn-secondary btn-lg btn-block");
+        cityButton.attr("type", "button");
+        cityButton.attr("data-city", city);
+        cityButton.css("border-radius", "5px");
+        cityContainer.prepend(cityButton);
     });
-    
+};
+
+function init() {
+    let storedCities = JSON.parse(localStorage.getItem("Cities"));
+    if (storedCities !== null) {
+        cities = storedCities;
+        renderCityButtons();
+    };
 };
 
 function storeCitiesArray() {
@@ -33,15 +32,16 @@ function renderTodaysWeather(weatherResponse) {
     console.log(weatherResponse);
 
     let today = $("#today")
-        .css("border", "2px solid black")
+        .css("border", "2px solid black");
+
+    let todaysHeader = $("#todaysHeader");
 
     let cityName = weatherResponse.city.name;
-    let todaysHeader = $("#todaysHeader");
     let todaysDate = moment().format("(DD/MM/YYYY)");
     todaysHeader.text(cityName + " " + todaysDate);
 
     let todaysIconID = weatherResponse.list[0].weather[0].icon;
-    let iconURL = "https://openweathermap.org/img/wn/"+ todaysIconID + "@2x.png";
+    let iconURL = "https://openweathermap.org/img/wn/" + todaysIconID + "@2x.png";
     let todaysIcon = $("<img>")
         .attr("src", iconURL);
     todaysHeader.append(todaysIcon);
@@ -57,7 +57,7 @@ function renderTodaysWeather(weatherResponse) {
     todaysHumidity.text("Humidity: " + weatherResponse.list[0].main.humidity + "%");
 
     cityInput = $("#search-input").val("");
-}
+};
 
 function renderForecast(weatherResponse) {
     console.log(weatherResponse);
@@ -78,14 +78,14 @@ function renderForecast(weatherResponse) {
             .addClass("card dayCard");
 
         let dayIconID = forecast.weather[0].icon;
-        let dayIconURL = "https://openweathermap.org/img/wn/"+ dayIconID + "@2x.png";
+        let dayIconURL = "https://openweathermap.org/img/wn/" + dayIconID + "@2x.png";
         let dayIcon = $("<img>")
             .addClass("card-img-top dayIcon")
             .attr("src", dayIconURL);
 
         let dayHeader = $("<h4>")
             .addClass("dayHeader");
-        let date = moment(forecast.dt_txt, "YYYY-MM-DD hh:mm:ss").format("DD/MM/YYYY")
+        let date = moment(forecast.dt_txt, "YYYY-MM-DD hh:mm:ss").format("DD/MM/YY")
         dayHeader.text(date);
 
 
@@ -94,55 +94,51 @@ function renderForecast(weatherResponse) {
             .attr("id", "dayTemp");
         let temp = parseInt(forecast.main.temp);
         dayTemp.text("Temp: " + temp + "°C");
-        
+
         let dayWind = $("<p>")
             .addClass("card-text dayPTag")
             .attr("id", "dayWind");
-        let wind = parseInt((forecast.wind.speed) *3.6);
+        let wind = parseInt((forecast.wind.speed) * 3.6);
         dayWind.text("Wind: " + wind + " km/h");
-        
+
         let dayHumidity = $("<p>")
             .addClass("card-text dayPTag")
             .attr("id", "dayHumidity");
         let humidity = forecast.main.humidity;
         dayHumidity.text("Humidity: " + humidity + "%");
-        
-        dayCard.append(dayIcon);
-        dayCard.append(dayHeader);
-        dayCard.append(dayTemp);
-        dayCard.append(dayWind);
-        dayCard.append(dayHumidity);
+
+        dayCard.append(dayIcon, dayHeader, dayTemp, dayWind, dayHumidity);
 
         $("#forecastRow").append(dayCard);
     });
-}
+};
 
 function buildQueryURL(input) {
-let APIKey = "2befb069531c6856f267a412d5ad148c";
+    let APIKey = "2befb069531c6856f267a412d5ad148c";
 
-lonLatURL = "https://api.openweathermap.org/geo/1.0/direct?q=" + input + "&appid=" + APIKey;
-console.log("lonLatURL: " + lonLatURL);
+    lonLatURL = "https://api.openweathermap.org/geo/1.0/direct?q=" + input + "&appid=" + APIKey;
+    console.log("lonLatURL: " + lonLatURL);
 
     $.ajax({
         url: lonLatURL,
         method: "GET"
-    }).then(function(geoResponse) {
+    }).then(function (geoResponse) {
         let lon = geoResponse[0].lon;
         let lat = geoResponse[0].lat;
-        let queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&units=metric&appid=" +APIKey;
+        let queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&units=metric&appid=" + APIKey;
         console.log(queryURL);
-        
+
         $.ajax({
             url: queryURL,
             method: "GET"
-        }).then(function(weatherResponse) {
+        }).then(function (weatherResponse) {
             renderTodaysWeather(weatherResponse);
             renderForecast(weatherResponse);
         });
     });
 };
 
-$("#search-button").on("click", function(event) {
+$("#search-button").on("click", function (event) {
     event.preventDefault();
     let cityInput = $("#search-input").val().trim().toUpperCase();
     console.log(cityInput);
@@ -160,8 +156,8 @@ $("#search-button").on("click", function(event) {
     buildQueryURL(cityInput);
 });
 
-$(".list-group").on("click", function(event) {
-    let cityButton = $(event.target); 
+$(".list-group").on("click", function (event) {
+    let cityButton = $(event.target);
     let cityInput = cityButton.attr("data-city");
     console.log(cityInput);
 
