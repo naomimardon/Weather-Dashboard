@@ -22,6 +22,7 @@ function renderCityButtons() {
             cityButton.css("border-radius", "5px");
             cityContainer.prepend(cityButton);
     });
+    
 };
 
 function storeCitiesArray() {
@@ -34,10 +35,10 @@ function renderTodaysWeather(weatherResponse) {
     let today = $("#today")
         .css("border", "2px solid black")
 
-    let cityInput = $("#search-input").val().trim().toUpperCase();
+    let cityName = weatherResponse.city.name;
     let todaysHeader = $("#todaysHeader");
     let todaysDate = moment().format("(DD/MM/YYYY)");
-    todaysHeader.text(cityInput + " " + todaysDate);
+    todaysHeader.text(cityName + " " + todaysDate);
 
     let todaysIconID = weatherResponse.list[0].weather[0].icon;
     let iconURL = "https://openweathermap.org/img/wn/"+ todaysIconID + "@2x.png";
@@ -116,11 +117,10 @@ function renderForecast(weatherResponse) {
     });
 }
 
-function buildQueryURL() {
+function buildQueryURL(input) {
 let APIKey = "2befb069531c6856f267a412d5ad148c";
-let cityInput = $("#search-input").val().trim().toLowerCase();
 
-lonLatURL = "https://api.openweathermap.org/geo/1.0/direct?q=" + cityInput + "&limit=1&appid=" + APIKey;
+lonLatURL = "https://api.openweathermap.org/geo/1.0/direct?q=" + input + "&appid=" + APIKey;
 console.log("lonLatURL: " + lonLatURL);
 
     $.ajax({
@@ -157,9 +157,15 @@ $("#search-button").on("click", function(event) {
 
     storeCitiesArray();
     renderCityButtons();
-    buildQueryURL();
+    buildQueryURL(cityInput);
+});
 
-    
+$(".list-group").on("click", function(event) {
+    let cityButton = $(event.target); 
+    let cityInput = cityButton.attr("data-city");
+    console.log(cityInput);
+
+    buildQueryURL(cityInput);
 });
 
 init();
