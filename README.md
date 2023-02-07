@@ -17,7 +17,7 @@ A button will also be rendered to the page for that city so the user can easily 
 
 Here is a screenshot of the deployed application:
 
-![Screenshot of Naomi Mardon's Weather Dashboard] (./assets/screenshot/Screenshot_Weather_Dashboard.png)
+![Screenshot of Naomi Mardon's Weather Dashboard](assets/screenshot/Screenshot_Weather_Dashboard.png)
 
 ## License
 
