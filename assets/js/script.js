@@ -1,5 +1,7 @@
 let cities = [];
 
+let todaysHeader = $("#todaysHeader");
+
 function renderCityButtons() {
     let cityContainer = $(".list-group");
 
@@ -28,17 +30,17 @@ function storeCitiesArray() {
     localStorage.setItem("Cities", JSON.stringify(cities));
 };
 
+function renderCityName(geoResponse) {
+    let cityName = geoResponse[0].name;
+    let todaysDate = moment().format("(DD/MM/YYYY)");
+    todaysHeader.text(cityName + " " + todaysDate);
+}
+
 function renderTodaysWeather(weatherResponse) {
     console.log(weatherResponse);
 
     let today = $("#today")
         .css("border", "2px solid black");
-
-    let todaysHeader = $("#todaysHeader");
-
-    let cityName = weatherResponse.city.name;
-    let todaysDate = moment().format("(DD/MM/YYYY)");
-    todaysHeader.text(cityName + " " + todaysDate);
 
     let todaysIconID = weatherResponse.list[0].weather[0].icon;
     let iconURL = "https://openweathermap.org/img/wn/" + todaysIconID + "@2x.png";
@@ -123,6 +125,7 @@ function buildQueryURL(input) {
         url: lonLatURL,
         method: "GET"
     }).then(function (geoResponse) {
+        renderCityName(geoResponse);
         let lon = geoResponse[0].lon;
         let lat = geoResponse[0].lat;
         let queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&units=metric&appid=" + APIKey;
